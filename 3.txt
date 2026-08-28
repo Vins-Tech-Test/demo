@@ -1,0 +1,56 @@
+import numpy as np
+
+w = 5.0
+lr = 0.1
+gradient = 2.0
+
+
+# Gradient Descent
+def gradient_descent(w, g, lr):
+    return w - lr * g
+
+
+# SGD
+def sgd(w, g, lr):
+    return w - lr * g
+
+
+# SGD with Momentum
+def momentum(w, g, lr, beta=0.9):
+    v = beta * 0 + lr * g
+    return w - v
+
+
+# AdaGrad
+def adagrad(w, g, lr):
+    G = g ** 2
+    return w - (lr * g) / (np.sqrt(G) + 1e-8)
+
+
+# RMSProp
+def rmsprop(w, g, lr, beta=0.9):
+    S = (1 - beta) * g ** 2
+    return w - (lr * g) / (np.sqrt(S) + 1e-8)
+
+
+# Adam
+def adam(w, g, lr):
+    beta1 = 0.9
+    beta2 = 0.999
+
+    m = (1 - beta1) * g
+    v = (1 - beta2) * g ** 2
+
+    m_hat = m / (1 - beta1)
+    v_hat = v / (1 - beta2)
+
+    return w - lr * m_hat / (np.sqrt(v_hat) + 1e-8)
+
+
+print("Initial Weight:", w)
+print("Gradient Descent:", gradient_descent(w, gradient, lr))
+print("SGD:", sgd(w, gradient, lr))
+print("Momentum:", momentum(w, gradient, lr))
+print("AdaGrad:", adagrad(w, gradient, lr))
+print("RMSProp:", rmsprop(w, gradient, lr))
+print("Adam:", adam(w, gradient, lr))
