@@ -1,0 +1,41 @@
+import numpy as np
+
+# XOR data
+X = np.array([[0,0], [0,1], [1,0], [1,1]])
+y = np.array([[0], [1], [1], [0]])
+
+# Initialize weights
+np.random.seed(1)
+W1 = np.random.randn(2, 4)
+W2 = np.random.randn(4, 1)
+
+# Bias
+b1 = np.zeros((1, 4))
+b2 = np.zeros((1, 1))
+
+# Sigmoid
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Training
+for i in range(10000):
+
+    # Forward propagation
+    h = sigmoid(X @ W1 + b1)
+    o = sigmoid(h @ W2 + b2)
+
+    # Backpropagation
+    e = y - o
+    d2 = e * o * (1 - o)
+    d1 = (d2 @ W2.T) * h * (1 - h)
+
+    # Update weights
+    W2 += 0.1 * h.T @ d2
+    W1 += 0.1 * X.T @ d1
+
+    # Update bias
+    b2 += 0.1 * d2.sum(axis=0)
+    b1 += 0.1 * d1.sum(axis=0)
+
+# Prediction
+print((o >= 0.5).astype(int))
