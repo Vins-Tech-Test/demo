@@ -1,0 +1,24 @@
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import preprocess_input, decode_predictions
+import numpy as np
+
+# Load VGG16 model
+model = VGG16(weights="imagenet")
+
+# Load image
+img = image.load_img("image.jpg", target_size=(224, 224))
+
+# Convert image to array
+x = image.img_to_array(img)
+x = np.expand_dims(x, axis=0)
+
+# Preprocess image
+x = preprocess_input(x)
+
+# Predict
+pred = model.predict(x)
+
+# Display top 3 predictions
+for _, label, score in decode_predictions(pred, top=3)[0]:
+    print(label, score)
