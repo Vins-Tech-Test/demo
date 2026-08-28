@@ -1,0 +1,87 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class NeuralNetwork:
+
+    def __init__(self, learning_rate):
+        self.weights = np.random.randn(2)
+        self.bias = np.random.randn()
+        self.learning_rate = learning_rate
+
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+
+    def sigmoid_deriv(self, x):
+        return self.sigmoid(x) * (1 - self.sigmoid(x))
+
+    def predict(self, x):
+        z = np.dot(x, self.weights) + self.bias
+        return self.sigmoid(z)
+
+    def gradients(self, x, target):
+        z = np.dot(x, self.weights) + self.bias
+        prediction = self.sigmoid(z)
+
+        error = 2 * (prediction - target)
+        dsigmoid = self.sigmoid_deriv(z)
+
+        db = error * dsigmoid
+        dw = error * dsigmoid * x
+
+        return db, dw
+
+    def update(self, db, dw):
+        self.bias -= self.learning_rate * db
+        self.weights -= self.learning_rate * dw
+
+    def train(self, X, y, iterations):
+        errors = []
+
+        for i in range(iterations):
+
+            index = np.random.randint(len(X))
+            x = X[index]
+            target = y[index]
+
+            db, dw = self.gradients(x, target)
+            self.update(db, dw)
+
+            if i % 100 == 0:
+                error = 0
+
+                for j in range(len(X)):
+                    prediction = self.predict(X[j])
+                    error += (prediction - y[j]) ** 2
+
+                errors.append(error)
+
+        return errors
+
+
+# Dataset
+X = np.array([
+    [3, 1.5],
+    [2, 1],
+    [4, 1.5],
+    [3, 4],
+    [3.5, 0.5],
+    [2, 0.5],
+    [5.5, 1],
+    [1, 1]
+])
+
+y = np.array([0, 1, 0, 1, 0, 1, 1, 0])
+
+
+# Create network
+nn = NeuralNetwork(0.1)
+
+# Train
+errors = nn.train(X, y, 10000)
+
+# Plot error
+plt.plot(range(0, 10000, 100), errors)
+plt.xlabel("Iterations")
+plt.ylabel("Error")
+plt.title("Training Error")
+plt.show()
